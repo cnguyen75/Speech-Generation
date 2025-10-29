@@ -1,4 +1,4 @@
-# 🎙️ Optimizing Neural Network-Based Speech Synthesis
+# Optimizing Neural Network-Based Speech Synthesis
 
 **Author:** Colin Nguyen  
 **Course:** Math 132A — Professor Paul J. Atzberger  
