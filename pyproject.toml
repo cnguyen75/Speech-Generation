@@ -1,0 +1,24 @@
+[project]
+name = "speech-optimizers"
+version = "2.0.0"
+description = "Optimizer study: fine-tuning a pretrained Tacotron 2 to a new LibriTTS-R speaker"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "torch==2.14.1",
+    "torchaudio==2.11.0",
+    "speechbrain==1.1.1",
+    "transformers",
+    "jiwer",
+    "librosa",
+    "soundfile",
+    "numpy",
+]
+
+[dependency-groups]
+dev = ["pytest"]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
