@@ -25,6 +25,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from speechopt import train as T  # noqa: E402
 from speechopt.common import RUNS, device, load_manifest, load_tacotron2, load_vocoder, write_json  # noqa: E402
 from speechopt.evaluate import ASR, evaluate_checkpoint, evaluate_references  # noqa: E402
+from speechopt.runtime import ActiveClock, lr_id  # noqa: E402
 
 OPTS = ["sgd", "adam", "adamw", "rmsprop", "lbfgs"]
 GRIDS = {"sgd": [3e-3, 1e-2, 3e-2], "adam": [3e-5, 1e-4, 3e-4], "adamw": [3e-5, 1e-4, 3e-4],
@@ -46,15 +47,15 @@ if args.smoke:
     T.VAL_EVERY = 2
 
 
+clock = ActiveClock(OUT / "sessions.json")  # running time only; idle gaps between sessions excluded
+
+
 def log(msg):
+    clock.touch()
     line = f"{dt.datetime.now():%Y-%m-%d %H:%M:%S} {msg}"
     print(line, flush=True)
     with open(LOG, "a") as f:
         f.write(line + "\n")
-
-
-def lr_id(lr):
-    return f"{lr:.0e}".replace("+", "").replace("-0", "-")
 
 
 log(f"=== start (pid {os.getpid()}) load {os.getloadavg()}")
@@ -156,7 +157,7 @@ if "time_budget" not in plan:
         step_t = r.get("median_step_time") or tune["adam"]["median_step_time"]
         overhead = max(0.0, r["wall_seconds"] - r.get("train_time", 0)) / max(1, r.get("steps", TUNE_STEPS)) * FINAL_STEPS
         per_seed += max(FINAL_STEPS * step_t, plan["time_budget"]) + overhead + 2 * eval_seconds
-    elapsed = time.time() - plan["started"]
+    elapsed = clock.active_seconds()
     n = len(SEEDS)  # largest seed count (5, then 4, floor 3) whose projection fits in MAX_HOURS
     while not args.smoke and n > 3 and (elapsed + n * per_seed) / 3600 > MAX_HOURS:
         n -= 1
@@ -185,7 +186,7 @@ for si, seed in enumerate(plan["seeds"]):
     left = len(plan["seeds"]) - si - 1
     eta = dt.datetime.now() + dt.timedelta(seconds=left * plan["projection"]["seconds_per_seed"])
     log(f"seed {seed} complete ({done}/{len(OPTS) * len(plan['seeds'])} final runs); elapsed "
-        f"{(time.time() - plan['started']) / 3600:.1f} h; projected finish {eta:%Y-%m-%d %H:%M}")
+        f"{clock.active_seconds() / 3600:.1f} h running; projected finish {eta:%Y-%m-%d %H:%M}")
 
 log("=== all runs finished; summarising")
 os.execv(sys.executable, [sys.executable, str(Path(__file__).with_name("summarize.py")), "--runs", str(OUT)])
