@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 850" width="920" height="850" role="img" aria-labelledby="t d" font-family="Archivo, sans-serif">
+<title id="t">Validation loss by training step</title>
+<desc id="d">Validation post-net log-mel MSE for each of 5 seeds. Dots: checkpoint kept for the steps budget. Source: runs/final_*/result.json, commit af156b3.</desc>
+<rect width="920" height="850" fill="#F6F2E8"/>
+<text x="24.0" y="34.0" font-size="20" font-weight="700" fill="#231F1B" text-anchor="start">Validation loss by training step</text>
+<text x="24.0" y="56.0" font-size="14" font-weight="400" fill="#3D372F" text-anchor="start">Validation mel loss (lower is better), one line per seed, 5 seeds per optimizer. Dots mark the</text>
+<text x="24.0" y="74.0" font-size="14" font-weight="400" fill="#3D372F" text-anchor="start">checkpoint kept within the 400-step budget. All five optimizers start from the same pretrained model.</text>
+<text x="24.0" y="128.0" font-size="15" font-weight="700" fill="#231F1B" text-anchor="start">SGD + momentum</text>
+<text x="24.0" y="148.0" font-size="13" font-weight="400" fill="#4F483E" text-anchor="start">learning rate 0.01</text>
+<text x="24.0" y="168.0" font-size="13" font-weight="400" fill="#4F483E" text-anchor="start">best validation 0.353</text>
+<text x="24.0" y="186.0" font-size="13" font-weight="400" fill="#4F483E" text-anchor="start">(mean of 5 seeds)</text>
+<line x1="190.0" y1="201.0" x2="860.0" y2="201.0" stroke="#B3A992" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="182.0" y="205.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">0.4</text>
+<line x1="190.0" y1="175.0" x2="860.0" y2="175.0" stroke="#B3A992" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="182.0" y="179.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">0.6</text>
+<line x1="190.0" y1="149.0" x2="860.0" y2="149.0" stroke="#B3A992" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="182.0" y="153.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">0.8</text>
+<line x1="190.0" y1="123.0" x2="860.0" y2="123.0" stroke="#B3A992" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="182.0" y="127.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">1.0</text>
+<line x1="190.0" y1="214.0" x2="860.0" y2="214.0" stroke="#B3A992" stroke-width="1" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="190.0" y="230.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">0</text>
+<text x="357.5" y="230.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">100</text>
+<text x="525.0" y="230.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">200</text>
+<text x="692.5" y="230.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">300</text>
+<text x="860.0" y="230.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">400</text>
+<line x1="190.0" y1="129.4" x2="860.0" y2="129.4" stroke="#8A8171" stroke-width="1.5" stroke-dasharray="6 4" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="860.0" y="123.4" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">pretrained model, before fine-tuning (0.951)</text>
+<polyline points="190.0,129.4 231.9,148.3 273.8,176.6 315.6,181.9 357.5,197.1 399.4,199.5 441.2,198.8 483.1,201.8 525.0,201.4 566.9,203.9 608.8,205.0 650.6,202.6 692.5,201.1 734.4,206.1 776.2,201.3 816.5,204.2 818.1,206.5 860.0,205.8" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>SGD + momentum, seed 0</title></polyline>
+<polyline points="190.0,129.4 231.9,172.7 273.8,181.7 315.6,175.1 357.5,195.7 399.4,198.1 441.2,200.5 483.1,201.1 525.0,201.1 566.9,203.0 608.8,202.0 650.6,203.1 692.5,204.0 734.4,204.4 776.2,206.1 818.1,207.1 824.8,206.5 860.0,206.7" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>SGD + momentum, seed 1</title></polyline>
+<polyline points="190.0,129.4 231.9,172.4 273.8,188.1 315.6,188.2 357.5,196.6 399.4,198.9 441.2,200.6 483.1,202.8 525.0,201.4 566.9,204.9 608.8,204.9 650.6,205.9 692.5,206.3 734.4,206.8 776.2,206.2 818.1,204.8 824.8,206.0 860.0,205.9" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>SGD + momentum, seed 2</title></polyline>
+<polyline points="190.0,129.4 231.9,170.2 273.8,186.9 315.6,193.7 357.5,197.4 399.4,200.0 441.2,199.4 483.1,201.6 525.0,202.6 566.9,204.6 608.8,206.0 650.6,204.6 692.5,205.3 734.4,207.0 776.2,207.6 818.1,206.4 821.5,206.5 860.0,206.6" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>SGD + momentum, seed 3</title></polyline>
+<polyline points="190.0,129.4 231.9,174.4 273.8,190.3 315.6,195.1 357.5,198.9 399.4,200.2 441.2,201.3 483.1,198.6 525.0,202.6 566.9,201.8 608.8,203.1 650.6,203.4 692.5,205.0 734.4,205.4 776.2,205.3 818.1,207.4 826.5,207.2 860.0,206.7" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>SGD + momentum, seed 4</title></polyline>
+<circle cx="818.1" cy="206.5" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>SGD + momentum, seed 0: kept checkpoint at step 375, validation 0.358</title></circle>
+<circle cx="818.1" cy="207.1" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>SGD + momentum, seed 1: kept checkpoint at step 375, validation 0.353</title></circle>
+<circle cx="734.4" cy="206.8" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>SGD + momentum, seed 2: kept checkpoint at step 325, validation 0.355</title></circle>
+<circle cx="776.2" cy="207.6" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>SGD + momentum, seed 3: kept checkpoint at step 350, validation 0.349</title></circle>
+<circle cx="818.1" cy="207.4" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>SGD + momentum, seed 4: kept checkpoint at step 375, validation 0.351</title></circle>
+<text x="24.0" y="272.0" font-size="15" font-weight="700" fill="#231F1B" text-anchor="start">Adam</text>
+<text x="24.0" y="292.0" font-size="13" font-weight="400" fill="#4F483E" text-anchor="start">learning rate 0.0001</text>
+<text x="24.0" y="312.0" font-size="13" font-weight="400" fill="#4F483E" text-anchor="start">best validation 0.343</text>
+<text x="24.0" y="330.0" font-size="13" font-weight="400" fill="#4F483E" text-anchor="start">(mean of 5 seeds)</text>
+<line x1="190.0" y1="345.0" x2="860.0" y2="345.0" stroke="#B3A992" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="182.0" y="349.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">0.4</text>
+<line x1="190.0" y1="319.0" x2="860.0" y2="319.0" stroke="#B3A992" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="182.0" y="323.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">0.6</text>
+<line x1="190.0" y1="293.0" x2="860.0" y2="293.0" stroke="#B3A992" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="182.0" y="297.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">0.8</text>
+<line x1="190.0" y1="267.0" x2="860.0" y2="267.0" stroke="#B3A992" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="182.0" y="271.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">1.0</text>
+<line x1="190.0" y1="358.0" x2="860.0" y2="358.0" stroke="#B3A992" stroke-width="1" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="190.0" y="374.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">0</text>
+<text x="357.5" y="374.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">100</text>
+<text x="525.0" y="374.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">200</text>
+<text x="692.5" y="374.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">300</text>
+<text x="860.0" y="374.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">400</text>
+<line x1="190.0" y1="273.4" x2="860.0" y2="273.4" stroke="#8A8171" stroke-width="1.5" stroke-dasharray="6 4" stroke-opacity="1.0" stroke-linecap="round"/>
+<polyline points="190.0,273.4 231.9,341.3 273.8,348.9 315.6,350.8 357.5,350.8 399.4,351.8 441.2,349.9 483.1,351.2 525.0,350.7 566.9,350.1 608.8,352.1 650.6,346.5 692.5,351.7 734.4,349.0 776.2,348.9 818.1,348.2 824.8,349.4 860.0,345.6" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>Adam, seed 0</title></polyline>
+<polyline points="190.0,273.4 231.9,341.0 273.8,348.8 315.6,349.9 357.5,351.2 399.4,352.9 441.2,351.0 483.1,352.8 525.0,348.9 566.9,352.1 608.8,347.2 650.6,351.5 692.5,348.9 734.4,347.8 776.2,346.3 818.1,349.4 819.8,348.9 860.0,350.0" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>Adam, seed 1</title></polyline>
+<polyline points="190.0,273.4 231.9,340.0 273.8,347.7 315.6,349.2 357.5,350.8 399.4,351.2 441.2,347.6 483.1,352.2 525.0,347.2 566.9,351.7 608.8,351.4 650.6,348.2 692.5,349.6 734.4,347.1 776.2,347.4 818.1,348.0 824.8,350.3 860.0,348.9" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>Adam, seed 2</title></polyline>
+<polyline points="190.0,273.4 231.9,340.2 273.8,349.4 315.6,352.2 357.5,352.7 399.4,352.6 441.2,351.9 483.1,351.6 525.0,350.8 566.9,346.0 608.8,352.4 650.6,348.6 692.5,348.5 734.4,349.1 776.2,350.5 818.1,348.2 860.0,348.6" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>Adam, seed 3</title></polyline>
+<polyline points="190.0,273.4 231.9,340.7 273.8,348.9 315.6,348.3 357.5,349.5 399.4,352.5 441.2,347.2 483.1,352.4 525.0,351.6 566.9,347.4 608.8,349.3 650.6,343.9 692.5,345.2 734.4,349.7 776.2,349.5 818.1,347.4 860.0,348.3" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>Adam, seed 4</title></polyline>
+<circle cx="608.8" cy="352.1" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>Adam, seed 0: kept checkpoint at step 250, validation 0.345</title></circle>
+<circle cx="399.4" cy="352.9" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>Adam, seed 1: kept checkpoint at step 125, validation 0.340</title></circle>
+<circle cx="483.1" cy="352.2" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>Adam, seed 2: kept checkpoint at step 175, validation 0.344</title></circle>
+<circle cx="357.5" cy="352.7" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>Adam, seed 3: kept checkpoint at step 100, validation 0.341</title></circle>
+<circle cx="399.4" cy="352.5" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>Adam, seed 4: kept checkpoint at step 125, validation 0.343</title></circle>
+<text x="24.0" y="416.0" font-size="15" font-weight="700" fill="#231F1B" text-anchor="start">AdamW</text>
+<text x="24.0" y="436.0" font-size="13" font-weight="400" fill="#4F483E" text-anchor="start">learning rate 0.0001</text>
+<text x="24.0" y="456.0" font-size="13" font-weight="400" fill="#4F483E" text-anchor="start">best validation 0.338</text>
+<text x="24.0" y="474.0" font-size="13" font-weight="400" fill="#4F483E" text-anchor="start">(mean of 5 seeds)</text>
+<line x1="190.0" y1="489.0" x2="860.0" y2="489.0" stroke="#B3A992" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="182.0" y="493.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">0.4</text>
+<line x1="190.0" y1="463.0" x2="860.0" y2="463.0" stroke="#B3A992" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="182.0" y="467.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">0.6</text>
+<line x1="190.0" y1="437.0" x2="860.0" y2="437.0" stroke="#B3A992" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="182.0" y="441.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">0.8</text>
+<line x1="190.0" y1="411.0" x2="860.0" y2="411.0" stroke="#B3A992" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="182.0" y="415.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">1.0</text>
+<line x1="190.0" y1="502.0" x2="860.0" y2="502.0" stroke="#B3A992" stroke-width="1" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="190.0" y="518.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">0</text>
+<text x="357.5" y="518.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">100</text>
+<text x="525.0" y="518.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">200</text>
+<text x="692.5" y="518.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">300</text>
+<text x="860.0" y="518.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">400</text>
+<line x1="190.0" y1="417.4" x2="860.0" y2="417.4" stroke="#8A8171" stroke-width="1.5" stroke-dasharray="6 4" stroke-opacity="1.0" stroke-linecap="round"/>
+<polyline points="190.0,417.4 231.9,483.8 273.8,491.8 315.6,491.4 357.5,493.7 399.4,496.5 441.2,495.4 483.1,496.6 525.0,494.1 566.9,494.0 608.8,495.9 650.6,491.5 692.5,496.4 734.4,492.2 776.2,493.7 818.1,490.6 828.2,497.1 860.0,492.9" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>AdamW, seed 0</title></polyline>
+<polyline points="190.0,417.4 231.9,484.4 273.8,492.5 315.6,494.1 357.5,495.4 399.4,495.2 441.2,494.9 483.1,497.5 525.0,492.9 566.9,495.4 608.8,494.6 650.6,490.6 692.5,492.2 734.4,492.4 776.2,492.3 818.1,495.4 821.5,493.2 860.0,495.2" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>AdamW, seed 1</title></polyline>
+<polyline points="190.0,417.4 231.9,485.3 273.8,491.4 315.6,492.4 357.5,494.8 399.4,494.4 441.2,493.7 483.1,497.6 525.0,494.0 566.9,494.5 608.8,492.9 650.6,493.2 692.5,494.5 734.4,494.3 776.2,493.8 818.1,488.6 821.5,492.1 860.0,495.2" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>AdamW, seed 2</title></polyline>
+<polyline points="190.0,417.4 231.9,484.6 273.8,492.8 315.6,495.0 357.5,495.1 399.4,496.8 441.2,497.2 483.1,497.5 525.0,495.1 566.9,490.9 608.8,492.9 650.6,490.2 692.5,492.2 734.4,493.7 776.2,492.4 818.1,491.5 821.5,489.9 860.0,492.9" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>AdamW, seed 3</title></polyline>
+<polyline points="190.0,417.4 231.9,484.7 273.8,493.1 315.6,492.3 357.5,493.9 399.4,495.4 441.2,491.4 483.1,495.5 525.0,495.8 566.9,491.0 608.8,493.4 650.6,486.5 692.5,493.4 734.4,494.1 776.2,495.7 811.4,493.2 818.1,493.1 860.0,493.2" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>AdamW, seed 4</title></polyline>
+<circle cx="828.2" cy="497.1" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>AdamW, seed 0: kept checkpoint at step 381, validation 0.338</title></circle>
+<circle cx="483.1" cy="497.5" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>AdamW, seed 1: kept checkpoint at step 175, validation 0.335</title></circle>
+<circle cx="483.1" cy="497.6" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>AdamW, seed 2: kept checkpoint at step 175, validation 0.334</title></circle>
+<circle cx="483.1" cy="497.5" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>AdamW, seed 3: kept checkpoint at step 175, validation 0.335</title></circle>
+<circle cx="525.0" cy="495.8" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>AdamW, seed 4: kept checkpoint at step 200, validation 0.348</title></circle>
+<text x="24.0" y="560.0" font-size="15" font-weight="700" fill="#231F1B" text-anchor="start">RMSprop</text>
+<text x="24.0" y="580.0" font-size="13" font-weight="400" fill="#4F483E" text-anchor="start">learning rate 3e-05</text>
+<text x="24.0" y="600.0" font-size="13" font-weight="400" fill="#4F483E" text-anchor="start">best validation 0.349</text>
+<text x="24.0" y="618.0" font-size="13" font-weight="400" fill="#4F483E" text-anchor="start">(mean of 5 seeds)</text>
+<line x1="190.0" y1="633.0" x2="860.0" y2="633.0" stroke="#B3A992" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="182.0" y="637.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">0.4</text>
+<line x1="190.0" y1="607.0" x2="860.0" y2="607.0" stroke="#B3A992" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="182.0" y="611.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">0.6</text>
+<line x1="190.0" y1="581.0" x2="860.0" y2="581.0" stroke="#B3A992" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="182.0" y="585.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">0.8</text>
+<line x1="190.0" y1="555.0" x2="860.0" y2="555.0" stroke="#B3A992" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="182.0" y="559.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">1.0</text>
+<line x1="190.0" y1="646.0" x2="860.0" y2="646.0" stroke="#B3A992" stroke-width="1" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="190.0" y="662.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">0</text>
+<text x="357.5" y="662.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">100</text>
+<text x="525.0" y="662.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">200</text>
+<text x="692.5" y="662.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">300</text>
+<text x="860.0" y="662.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">400</text>
+<line x1="190.0" y1="561.4" x2="860.0" y2="561.4" stroke="#8A8171" stroke-width="1.5" stroke-dasharray="6 4" stroke-opacity="1.0" stroke-linecap="round"/>
+<polyline points="190.0,561.4 231.9,627.4 273.8,632.7 315.6,636.4 357.5,637.6 399.4,638.4 441.2,637.2 483.1,631.8 525.0,638.9 566.9,638.3 608.8,639.1 650.6,638.2 692.5,634.8 734.4,637.1 776.2,637.4 818.1,636.5 831.5,637.0 860.0,636.8" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>RMSprop, seed 0</title></polyline>
+<polyline points="190.0,561.4 231.9,627.3 273.8,633.4 315.6,636.3 357.5,637.6 399.4,638.9 441.2,639.9 483.1,637.4 525.0,636.5 566.9,639.0 608.8,637.8 650.6,637.0 692.5,636.2 734.4,637.2 776.2,636.6 818.1,636.2 819.8,633.6 860.0,634.9" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>RMSprop, seed 1</title></polyline>
+<polyline points="190.0,561.4 231.9,627.3 273.8,634.8 315.6,635.2 357.5,637.8 399.4,636.8 441.2,638.4 483.1,638.0 525.0,639.5 566.9,636.5 608.8,639.3 650.6,638.6 692.5,639.8 734.4,637.5 776.2,637.1 818.1,637.0 821.5,638.4 860.0,637.6" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>RMSprop, seed 2</title></polyline>
+<polyline points="190.0,561.4 231.9,624.4 273.8,632.5 315.6,635.0 357.5,635.6 399.4,636.8 441.2,638.0 483.1,634.0 525.0,636.5 566.9,636.6 608.8,637.6 650.6,638.6 692.5,636.9 734.4,636.0 776.2,635.4 818.1,637.7 826.5,635.8 860.0,639.4" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>RMSprop, seed 3</title></polyline>
+<polyline points="190.0,561.4 231.9,628.0 273.8,636.8 315.6,638.7 357.5,638.7 399.4,640.0 441.2,638.9 483.1,639.2 525.0,639.3 566.9,639.0 608.8,637.6 650.6,639.0 692.5,638.4 734.4,638.2 776.2,637.9 809.8,636.9 818.1,638.6 860.0,635.8" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>RMSprop, seed 4</title></polyline>
+<circle cx="608.8" cy="639.1" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>RMSprop, seed 0: kept checkpoint at step 250, validation 0.353</title></circle>
+<circle cx="441.2" cy="639.9" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>RMSprop, seed 1: kept checkpoint at step 150, validation 0.347</title></circle>
+<circle cx="692.5" cy="639.8" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>RMSprop, seed 2: kept checkpoint at step 300, validation 0.347</title></circle>
+<circle cx="860.0" cy="639.4" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>RMSprop, seed 3: kept checkpoint at step 400, validation 0.351</title></circle>
+<circle cx="399.4" cy="640.0" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>RMSprop, seed 4: kept checkpoint at step 125, validation 0.347</title></circle>
+<text x="24.0" y="704.0" font-size="15" font-weight="700" fill="#231F1B" text-anchor="start">L-BFGS</text>
+<text x="24.0" y="724.0" font-size="13" font-weight="400" fill="#4F483E" text-anchor="start">learning rate 0.3</text>
+<text x="24.0" y="744.0" font-size="13" font-weight="400" fill="#4F483E" text-anchor="start">best validation 0.597</text>
+<text x="24.0" y="762.0" font-size="13" font-weight="400" fill="#4F483E" text-anchor="start">(mean of 5 seeds)</text>
+<line x1="190.0" y1="777.0" x2="860.0" y2="777.0" stroke="#B3A992" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="182.0" y="781.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">0.4</text>
+<line x1="190.0" y1="751.0" x2="860.0" y2="751.0" stroke="#B3A992" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="182.0" y="755.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">0.6</text>
+<line x1="190.0" y1="725.0" x2="860.0" y2="725.0" stroke="#B3A992" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="182.0" y="729.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">0.8</text>
+<line x1="190.0" y1="699.0" x2="860.0" y2="699.0" stroke="#B3A992" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="182.0" y="703.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="end">1.0</text>
+<line x1="190.0" y1="790.0" x2="860.0" y2="790.0" stroke="#B3A992" stroke-width="1" stroke-opacity="1.0" stroke-linecap="round"/>
+<text x="190.0" y="806.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">0</text>
+<text x="357.5" y="806.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">100</text>
+<text x="525.0" y="806.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">200</text>
+<text x="692.5" y="806.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">300</text>
+<text x="860.0" y="806.0" font-size="12" font-weight="400" fill="#4F483E" text-anchor="middle">400</text>
+<line x1="190.0" y1="705.4" x2="860.0" y2="705.4" stroke="#8A8171" stroke-width="1.5" stroke-dasharray="6 4" stroke-opacity="1.0" stroke-linecap="round"/>
+<polyline points="190.0,705.4 231.9,702.3 273.8,740.8 315.6,748.5 357.5,754.3 399.4,758.1 441.2,759.3 483.1,758.0 511.6,757.7 525.0,758.7 566.9,760.1 608.8,764.3 650.6,768.1 692.5,766.3 734.4,765.7 776.2,766.2 818.1,765.3 860.0,765.7" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>L-BFGS, seed 0</title></polyline>
+<polyline points="190.0,705.4 231.9,702.3 273.8,730.0 315.6,745.4 357.5,755.8 399.4,758.3 441.2,758.2 483.1,758.5 509.9,758.2 525.0,758.3 566.9,758.2 608.8,758.3 650.6,758.2 692.5,758.3 734.4,757.8 776.2,758.1 818.1,758.1 860.0,758.0" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>L-BFGS, seed 1</title></polyline>
+<polyline points="190.0,705.4 231.9,693.2 273.8,721.9 315.6,731.7 357.5,746.7 399.4,745.0 441.2,745.1 483.1,744.6 508.2,748.8 525.0,749.1 566.9,748.9 608.8,748.7 650.6,750.1 692.5,750.2 734.4,754.8 776.2,746.5 818.1,748.9 860.0,749.1" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>L-BFGS, seed 2</title></polyline>
+<polyline points="190.0,705.4 231.9,702.4 273.8,712.0 315.6,698.8 357.5,707.4 399.4,696.1 441.2,689.8 483.1,701.1 511.6,694.8 525.0,701.9 566.9,692.0 608.8,692.2 650.6,711.4 692.5,698.6 734.4,702.2 776.2,697.8 818.1,704.4 860.0,732.8" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>L-BFGS, seed 3</title></polyline>
+<polyline points="190.0,705.4 231.9,690.1 273.8,710.3 315.6,734.4 357.5,737.1 399.4,742.7 441.2,740.3 483.1,740.5 509.9,740.7 525.0,740.1 566.9,740.5 608.8,740.4 650.6,740.7 692.5,740.5 734.4,740.6 776.2,740.5 818.1,740.6 860.0,740.6" fill="none" stroke="#1F6FB5" stroke-width="2" stroke-opacity="0.55" stroke-linejoin="round" stroke-linecap="round"><title>L-BFGS, seed 4</title></polyline>
+<circle cx="650.6" cy="768.1" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>L-BFGS, seed 0: kept checkpoint at step 275, validation 0.469</title></circle>
+<circle cx="483.1" cy="758.5" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>L-BFGS, seed 1: kept checkpoint at step 175, validation 0.542</title></circle>
+<circle cx="734.4" cy="754.8" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>L-BFGS, seed 2: kept checkpoint at step 325, validation 0.571</title></circle>
+<circle cx="860.0" cy="732.8" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>L-BFGS, seed 3: kept checkpoint at step 400, validation 0.740</title></circle>
+<circle cx="399.4" cy="742.7" r="5" fill="#1F6FB5" fill-opacity="1.0" stroke="#F6F2E8" stroke-width="2"><title>L-BFGS, seed 4: kept checkpoint at step 125, validation 0.664</title></circle>
+<text x="525.0" y="842.0" font-size="13" font-weight="400" fill="#4F483E" text-anchor="middle">training step</text>
+</svg>
