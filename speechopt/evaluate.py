@@ -1,6 +1,10 @@
 """Score a Tacotron 2 checkpoint on a split: teacher-forced mel MSE, then free-running synthesis
 through the frozen HiFi-GAN, scored by Whisper word error rate and MCD against the real recording."""
 
+from collections.abc import Collection
+from pathlib import Path
+from typing import TYPE_CHECKING, Any
+
 import jiwer
 import numpy as np
 import soundfile as sf
@@ -9,7 +13,11 @@ import torchaudio.functional as AF
 
 from .common import SPEAKER_DIR, SR, text_to_ids
 from .mcd import mcd
-from .train import teacher_forced_mse
+from .train import Clips, teacher_forced_mse
+
+
+if TYPE_CHECKING:
+    from speechbrain.inference.vocoders import HIFIGAN
 
 
 ASR_MODEL = "openai/whisper-small.en"
@@ -18,7 +26,7 @@ MAX_DECODER_STEPS = 1000
 
 
 class ASR:
-    def __init__(self, dev):
+    def __init__(self, dev: torch.device) -> None:
         from transformers import WhisperForConditionalGeneration, WhisperProcessor
 
         self.proc = WhisperProcessor.from_pretrained(ASR_MODEL)
@@ -29,11 +37,11 @@ class ASR:
         )
         self.dev = dev
 
-    def norm(self, text):
+    def norm(self, text: str) -> str:
         return self.proc.tokenizer.normalize(text)
 
     @torch.no_grad()
-    def transcribe(self, wavs_22k, batch=8):
+    def transcribe(self, wavs_22k: list[np.ndarray], batch: int = 8) -> list[str]:
         out = []
         for s in range(0, len(wavs_22k), batch):
             chunk = [
@@ -48,7 +56,7 @@ class ASR:
         return out
 
 
-def word_errors(asr, refs, hyps):
+def word_errors(asr: ASR, refs: list[str], hyps: list[str]) -> list[tuple[int, int]]:
     rows = []
     for r, h in zip(refs, hyps):
         rn, hn = asr.norm(r), asr.norm(h)
@@ -59,12 +67,14 @@ def word_errors(asr, refs, hyps):
     return rows
 
 
-def real_wav(uid):
+def real_wav(uid: str) -> np.ndarray:
     return sf.read(str(SPEAKER_DIR / "wav22k" / f"{uid}.wav"), dtype="float32")[0]
 
 
 @torch.no_grad()
-def synthesize(cpu_model, vocoder, texts):
+def synthesize(
+    cpu_model: torch.nn.Module, vocoder: "HIFIGAN", texts: list[str]
+) -> tuple[list[np.ndarray], list[bool]]:
     cpu_model.eval()
     wavs, failed = [], []
     for i, t in enumerate(texts):
@@ -76,7 +86,13 @@ def synthesize(cpu_model, vocoder, texts):
     return wavs, failed
 
 
-def score(utts, wavs, failed, asr, extra=None):
+def score(
+    utts: list[dict[str, Any]],
+    wavs: list[np.ndarray],
+    failed: list[bool],
+    asr: ASR,
+    extra: dict[str, float] | None = None,
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     refs_real = [real_wav(u["id"]) for u in utts]
     hyps = asr.transcribe(wavs)
     errs = word_errors(asr, [u["text"] for u in utts], hyps)
@@ -105,8 +121,16 @@ def score(utts, wavs, failed, asr, extra=None):
 
 
 def evaluate_checkpoint(
-    state, train_model, cpu_model, vocoder, asr, clips, dev, showcase_dir=None, showcase=()
-):
+    state: dict[str, torch.Tensor],
+    train_model: torch.nn.Module,
+    cpu_model: torch.nn.Module,
+    vocoder: "HIFIGAN",
+    asr: ASR,
+    clips: Clips,
+    dev: torch.device,
+    showcase_dir: Path | None = None,
+    showcase: Collection[str] = (),
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """state: Tacotron 2 state_dict. Returns (aggregate, per-utterance) on `clips`."""
     train_model.load_state_dict(state)
     train_model.to(dev)
@@ -124,7 +148,13 @@ def evaluate_checkpoint(
 
 
 @torch.no_grad()
-def evaluate_references(vocoder, asr, clips, showcase_dir=None, showcase=()):
+def evaluate_references(
+    vocoder: "HIFIGAN",
+    asr: ASR,
+    clips: Clips,
+    showcase_dir: Path | None = None,
+    showcase: Collection[str] = (),
+) -> dict[str, tuple[dict[str, Any], list[dict[str, Any]]]]:
     """Real recordings (ASR floor) and copy-synthesis (real mel -> HiFi-GAN; vocoder ceiling)."""
     real = [real_wav(u["id"]) for u in clips.items]
     gt_agg, gt_utt = score(clips.items, real, [False] * len(real), asr)

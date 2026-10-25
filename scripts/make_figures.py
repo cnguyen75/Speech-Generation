@@ -54,7 +54,7 @@ ref = json.loads((RUNS / "ref" / "eval.json").read_text())
 
 
 class Svg:
-    def __init__(self, w, h, title, desc):
+    def __init__(self, w: int, h: int, title: str, desc: str) -> None:
         self.w, self.h = w, h
         self.parts = [
             f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img" '
@@ -64,25 +64,61 @@ class Svg:
             f'<rect width="{w}" height="{h}" fill="{CARD}"/>',
         ]
 
-    def add(self, s):
+    def add(self, s: str) -> None:
         self.parts.append(s)
 
-    def text(self, x, y, s, size=14, fill=INK, weight=400, anchor="start"):
+    def text(
+        self,
+        x: float,
+        y: float,
+        s: str,
+        size: int = 14,
+        fill: str = INK,
+        weight: int = 400,
+        anchor: str = "start",
+    ) -> None:
         self.add(
             f'<text x="{x:.1f}" y="{y:.1f}" font-size="{size}" font-weight="{weight}" fill="{fill}" text-anchor="{anchor}">{escape(s)}</text>'
         )
 
-    def line(self, x1, y1, x2, y2, stroke=RULE, width=1, dash=None, opacity=1.0, tip=None):
+    def line(
+        self,
+        x1: float,
+        y1: float,
+        x2: float,
+        y2: float,
+        stroke: str = RULE,
+        width: float = 1,
+        dash: str | None = None,
+        opacity: float = 1.0,
+        tip: str | None = None,
+    ) -> None:
         d = f' stroke-dasharray="{dash}"' if dash else ""
         body = f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" stroke="{stroke}" stroke-width="{width}"{d} stroke-opacity="{opacity}" stroke-linecap="round"'
         self.add(body + (f"><title>{escape(tip)}</title></line>" if tip else "/>"))
 
-    def poly(self, pts, stroke=BLUE, width=2, opacity=1.0, tip=None):
+    def poly(
+        self,
+        pts: list[tuple[float, float]],
+        stroke: str = BLUE,
+        width: float = 2,
+        opacity: float = 1.0,
+        tip: str | None = None,
+    ) -> None:
         p = " ".join(f"{x:.1f},{y:.1f}" for x, y in pts)
         body = f'<polyline points="{p}" fill="none" stroke="{stroke}" stroke-width="{width}" stroke-opacity="{opacity}" stroke-linejoin="round" stroke-linecap="round"'
         self.add(body + (f"><title>{escape(tip)}</title></polyline>" if tip else "/>"))
 
-    def dot(self, x, y, r=5, fill=BLUE, tip=None, hollow=False, opacity=1.0):
+    def dot(
+        self,
+        x: float,
+        y: float,
+        r: float = 5,
+        fill: str = BLUE,
+        tip: str | None = None,
+        hollow: bool = False,
+        opacity: float = 1.0,
+    ) -> None:
         f = (
             f'fill="{CARD}" stroke="{fill}" stroke-width="2"'
             if hollow
@@ -94,21 +130,29 @@ class Svg:
             + "</circle>"
         )
 
-    def save(self, name):
+    def save(self, name: str) -> None:
         self.add("</svg>")
         (OUT / name).write_text("\n".join(self.parts) + "\n")
         print("wrote", OUT / name)
 
 
-def header(svg, title, subtitle):
+def header(svg: Svg, title: str, subtitle: list[str]) -> None:
     svg.text(24, 34, title, size=20, weight=700)
     for i, line in enumerate(subtitle):
         svg.text(24, 56 + 18 * i, line, size=14, fill=INK2)
 
 
 def learning_curves(
-    xkey, xmax, xticks, xlabel, fname, title, sub, budget_line=None, mark_budget="steps"
-):
+    xkey: str,
+    xmax: float,
+    xticks: list[float],
+    xlabel: str,
+    fname: str,
+    title: str,
+    sub: list[str],
+    budget_line: float | None = None,
+    mark_budget: str = "steps",
+) -> None:
     W, left, right, top, ph, gap = 920, 190, 860, 110, 104, 40
     H = top + len(OPTS) * (ph + gap) + 20
     svg = Svg(

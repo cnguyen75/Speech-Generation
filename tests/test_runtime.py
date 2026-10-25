@@ -1,15 +1,17 @@
+from pathlib import Path
+
 from speechopt.runtime import ActiveClock, lr_id
 
 
 class FakeTime:
-    def __init__(self, t):
+    def __init__(self, t: float) -> None:
         self.t = t
 
-    def __call__(self):
+    def __call__(self) -> float:
         return self.t
 
 
-def test_idle_gap_between_sessions_is_not_counted(tmp_path):
+def test_idle_gap_between_sessions_is_not_counted(tmp_path: Path) -> None:
     clock_time = FakeTime(1000.0)
     path = tmp_path / "sessions.json"
     first = ActiveClock(path, now=clock_time)
@@ -21,7 +23,7 @@ def test_idle_gap_between_sessions_is_not_counted(tmp_path):
     assert second.active_seconds() == 150.0
 
 
-def test_crash_loses_only_time_since_last_touch(tmp_path):
+def test_crash_loses_only_time_since_last_touch(tmp_path: Path) -> None:
     clock_time = FakeTime(0.0)
     path = tmp_path / "sessions.json"
     c = ActiveClock(path, now=clock_time)
@@ -32,7 +34,7 @@ def test_crash_loses_only_time_since_last_touch(tmp_path):
     assert ActiveClock(path, now=clock_time).active_seconds() == 60.0
 
 
-def test_sessions_persist_to_disk(tmp_path):
+def test_sessions_persist_to_disk(tmp_path: Path) -> None:
     clock_time = FakeTime(10.0)
     path = tmp_path / "sessions.json"
     c = ActiveClock(path, now=clock_time)
@@ -44,7 +46,7 @@ def test_sessions_persist_to_disk(tmp_path):
     assert json.loads(path.read_text()) == [[10.0, 40.0]]
 
 
-def test_lr_folder_names():
+def test_lr_folder_names() -> None:
     assert [lr_id(x) for x in (3e-3, 1e-2, 3e-2, 1e-4, 1.0, 0.1)] == [
         "3e-3",
         "1e-2",

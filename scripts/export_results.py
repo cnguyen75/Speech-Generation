@@ -22,7 +22,7 @@ man = load_manifest()
 load = lambda p: json.loads(Path(p).read_text())
 
 
-def agg(vals):
+def agg(vals: list[float]) -> dict[str, float]:
     return dict(mean=st.mean(vals), sd=st.stdev(vals), min=min(vals), max=max(vals))
 
 

@@ -47,7 +47,7 @@ model, vocoder = load_tacotron2(), load_vocoder()
 OUT.mkdir(parents=True, exist_ok=True)
 
 
-def write_mp3(path, wav):
+def write_mp3(path: Path, wav: np.ndarray) -> int:
     sf.write(
         str(path),
         np.clip(wav, -1.0, 1.0),
@@ -62,12 +62,12 @@ def write_mp3(path, wav):
     return size
 
 
-def rms(x):
+def rms(x: np.ndarray) -> float:
     return float(np.sqrt(np.mean(x**2))) if len(x) else 0.0
 
 
 @torch.no_grad()
-def generate(uid):
+def generate(uid: str) -> tuple[np.ndarray, int, np.ndarray]:
     i = ids_all.index(uid)
     torch.manual_seed(SYNTH_SEED + i)  # same seed as evaluate.synthesize
     ids = text_to_ids(test.items[i]["text"])[None]

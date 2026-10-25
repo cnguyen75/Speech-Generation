@@ -26,7 +26,7 @@ HOP = 256
 K = 10.0 / np.log(10.0)
 
 
-def freqt(c, order, alpha):
+def freqt(c: np.ndarray, order: int, alpha: float) -> np.ndarray:
     """Frequency-warp minimum-phase cepstra c (frames x M) to `order`+1 coefficients."""
     c = np.atleast_2d(np.asarray(c, dtype=np.float64))
     g = np.zeros((c.shape[0], order + 1))
@@ -41,7 +41,9 @@ def freqt(c, order, alpha):
     return g
 
 
-def mel_cepstrum(y, order=ORDER, alpha=ALPHA_22K, lifter=LIFTER):
+def mel_cepstrum(
+    y: np.ndarray, order: int = ORDER, alpha: float = ALPHA_22K, lifter: int = LIFTER
+) -> np.ndarray:
     """Frames x (order+1) mel-cepstra of a mono float waveform."""
     spec = np.abs(
         librosa.stft(
@@ -55,13 +57,13 @@ def mel_cepstrum(y, order=ORDER, alpha=ALPHA_22K, lifter=LIFTER):
     return freqt(c, order, alpha)
 
 
-def mcd_aligned(mc_a, mc_b):
+def mcd_aligned(mc_a: np.ndarray, mc_b: np.ndarray) -> float:
     """MCD (dB) between two equal-length mel-cepstrum sequences, excluding c0."""
     diff = mc_a[:, 1:] - mc_b[:, 1:]
     return float(np.mean(K * np.sqrt(2.0 * np.sum(diff * diff, axis=1))))
 
 
-def mcd(y_ref, y_syn, top_db=30):
+def mcd(y_ref: np.ndarray, y_syn: np.ndarray, top_db: float = 30) -> float:
     """DTW-aligned MCD (dB) between a reference and a synthesised waveform at 22.05 kHz."""
     a = mel_cepstrum(librosa.effects.trim(np.asarray(y_ref, dtype=np.float64), top_db=top_db)[0])
     b = mel_cepstrum(librosa.effects.trim(np.asarray(y_syn, dtype=np.float64), top_db=top_db)[0])

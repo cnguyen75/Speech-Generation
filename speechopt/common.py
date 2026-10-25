@@ -3,8 +3,13 @@
 import json
 import os
 from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
 import torch
+
+
+if TYPE_CHECKING:
+    from speechbrain.inference.vocoders import HIFIGAN
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -33,16 +38,16 @@ MEL_KWARGS = dict(
 TEXT_CLEANERS = ["english_cleaners"]
 
 
-def device():
+def device() -> torch.device:
     return torch.device("mps" if torch.backends.mps.is_available() else "cpu")
 
 
-def sync(dev):
+def sync(dev: torch.device) -> None:
     if dev.type == "mps":
         torch.mps.synchronize()
 
 
-def load_tacotron2():
+def load_tacotron2() -> torch.nn.Module:
     """Return a fresh SpeechBrain Tacotron 2 module (CPU) with pretrained LJSpeech weights."""
     from speechbrain.inference.TTS import Tacotron2
 
@@ -56,7 +61,7 @@ def load_tacotron2():
     return model
 
 
-def load_vocoder():
+def load_vocoder() -> "HIFIGAN":
     from speechbrain.inference.vocoders import HIFIGAN
 
     return HIFIGAN.from_hparams(
@@ -66,24 +71,24 @@ def load_vocoder():
     )
 
 
-def text_to_ids(text):
+def text_to_ids(text: str) -> torch.Tensor:
     from speechbrain.utils.text_to_sequence import text_to_sequence
 
     return torch.tensor(text_to_sequence(text, TEXT_CLEANERS), dtype=torch.long)
 
 
-def wav_to_mel(wav):
+def wav_to_mel(wav: torch.Tensor) -> torch.Tensor:
     """wav: 1-D float tensor at 22.05 kHz -> (80, frames) log-mel, as in the recipe."""
     from speechbrain.lobes.models.Tacotron2 import mel_spectrogram
 
     return mel_spectrogram(audio=wav, **MEL_KWARGS)
 
 
-def load_manifest():
+def load_manifest() -> dict[str, Any]:
     return json.loads((SPEAKER_DIR / "manifest.json").read_text())
 
 
-def write_json(path, obj):
+def write_json(path: str | Path, obj: Any) -> None:
     """Atomic JSON write so a crash never leaves a half-written result file."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)

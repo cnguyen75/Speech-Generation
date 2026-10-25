@@ -1,8 +1,10 @@
 """One fine-tuning run: an optimizer, a learning rate, a seed and the step/time budgets."""
 
+from collections.abc import Callable, Iterator
 import math
 import os
 import time
+from typing import Any
 
 import numpy as np
 from speechbrain.lobes.models.Tacotron2 import Loss
@@ -25,16 +27,16 @@ criterion = Loss(gate_loss_weight=1.0, guided_attention_sigma=0.2, guided_attent
 class Clips:
     """In-memory (text ids, log-mel) pairs for one split."""
 
-    def __init__(self, manifest, split):
+    def __init__(self, manifest: dict[str, Any], split: str) -> None:
         self.items = [c for c in manifest["clips"] if c["split"] == split]
         self.items.sort(key=lambda c: c["id"])
         self.text = [text_to_ids(c["text"]) for c in self.items]
         self.mel = [torch.load(SPEAKER_DIR / "mel" / f"{c['id']}.pt") for c in self.items]
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.items)
 
-    def batch(self, idx, dev):
+    def batch(self, idx: list[int], dev: torch.device) -> dict[str, Any]:
         idx = sorted(
             idx, key=lambda i: -len(self.text[i])
         )  # encoder packs sequences sorted by length
@@ -58,13 +60,17 @@ class Clips:
         )
 
 
-def forward_loss(model, b):
+def forward_loss(
+    model: torch.nn.Module, b: dict[str, Any]
+) -> tuple[tuple[torch.Tensor, ...], torch.Tensor]:
     out = model((b["txt"], b["il"], b["mel"], b["max_len"], b["ol"]))
     return out, criterion(out[:4], (b["mel"], b["gate"]), b["il"], b["ol"], 10**6).loss
 
 
 @torch.no_grad()
-def teacher_forced_mse(model, clips, dev, per_utt=False):
+def teacher_forced_mse(
+    model: torch.nn.Module, clips: Clips, dev: torch.device, per_utt: bool = False
+) -> float | tuple[float, dict[str, float]]:
     """Masked post-net log-mel MSE (mean over valid frames x 80 bins), fixed prenet-dropout seed."""
     model.eval()
     torch.manual_seed(VAL_SEED)
@@ -82,7 +88,7 @@ def teacher_forced_mse(model, clips, dev, per_utt=False):
     return (sq / cnt, utt) if per_utt else sq / cnt
 
 
-def make_optimizer(name, params, lr):
+def make_optimizer(name: str, params: list[torch.Tensor], lr: float) -> torch.optim.Optimizer:
     if name == "sgd":
         return torch.optim.SGD(params, lr=lr, momentum=0.9)
     if name == "adam":
@@ -98,7 +104,9 @@ def make_optimizer(name, params, lr):
     raise ValueError(name)
 
 
-def batch_order(n, seed, lengths=None, bucket=4):
+def batch_order(
+    n: int, seed: int, lengths: list[int] | None = None, bucket: int = 4
+) -> Iterator[list[int]]:
     """Endless sequence of shuffled epochs; identical for every optimizer with the same seed.
 
     With `lengths`, each epoch's permutation is cut into groups of bucket*BATCH clips, each group
@@ -119,7 +127,19 @@ def batch_order(n, seed, lengths=None, bucket=4):
         yield from batches
 
 
-def run(model, pristine, train, val, dev, opt_name, lr, seed, max_steps, time_budget, log):
+def run(
+    model: torch.nn.Module,
+    pristine: dict[str, torch.Tensor],
+    train: Clips,
+    val: Clips,
+    dev: torch.device,
+    opt_name: str,
+    lr: float,
+    seed: int,
+    max_steps: int,
+    time_budget: float | None,
+    log: Callable[[str], None],
+) -> tuple[dict[str, Any], dict[str, dict[str, torch.Tensor]]]:
     """Train from the pretrained weights. Returns (result dict, {budget: best state_dict on CPU}).
 
     Stops once both `max_steps` steps and `time_budget` seconds of training time are done
@@ -151,7 +171,7 @@ def run(model, pristine, train, val, dev, opt_name, lr, seed, max_steps, time_bu
         t0 = time.perf_counter()
         if opt_name == "lbfgs":
 
-            def closure():
+            def closure() -> torch.Tensor:
                 nonlocal evals
                 torch.manual_seed(step_seed)  # same dropout masks for every line-search evaluation
                 opt.zero_grad(set_to_none=True)

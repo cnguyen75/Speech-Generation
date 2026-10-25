@@ -19,6 +19,7 @@ from pathlib import Path
 import sys
 import time
 import traceback
+from typing import Any
 
 import torch
 
@@ -58,7 +59,7 @@ if args.smoke:
 clock = ActiveClock(OUT / "sessions.json")  # running time only; idle gaps between sessions excluded
 
 
-def log(msg):
+def log(msg: str) -> None:
     clock.touch()
     line = f"{dt.datetime.now():%Y-%m-%d %H:%M:%S} {msg}"
     print(line, flush=True)
@@ -134,7 +135,9 @@ if not ref_path.exists():
 eval_seconds = json.loads(ref_path.read_text())["eval_seconds_per_checkpoint"]
 
 
-def do_run(run_id, opt, lr, seed, steps, budget, save):
+def do_run(
+    run_id: str, opt: str, lr: float, seed: int, steps: int, budget: float | None, save: bool
+) -> dict[str, Any]:
     """Run once (or load the finished result). Returns the result dict."""
     global consecutive_failures
     d = OUT / run_id

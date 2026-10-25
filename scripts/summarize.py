@@ -17,6 +17,7 @@ import os
 from pathlib import Path
 import statistics as st
 import sys
+from typing import Any
 
 import numpy as np
 
@@ -44,7 +45,7 @@ seeds = plan["seeds"]
 rng = np.random.default_rng(0)
 
 
-def load(p):
+def load(p: Path) -> dict[str, Any] | None:
     return json.loads(p.read_text()) if p.exists() else None
 
 
@@ -76,7 +77,7 @@ for o in OPTS:
             flags.append({"run": f"final_{o}_s{s}", "reasons": why})
 
 
-def per_utt_matrix(budget, o, key):
+def per_utt_matrix(budget: str, o: str, key: str) -> tuple[np.ndarray, np.ndarray | None] | None:
     rows = [e["per_utt"] for e in evals[budget][o].values() if e]
     if not rows:
         return None
@@ -87,11 +88,11 @@ def per_utt_matrix(budget, o, key):
     return np.array([[u[key] for u in r] for r in rows]), None
 
 
-def stat(a, w):
+def stat(a: np.ndarray, w: np.ndarray | None) -> float:
     return a.sum() / w.sum() if w is not None else a.mean()
 
 
-def boot_diff(budget, o, best, key, n=10000):
+def boot_diff(budget: str, o: str, best: str, key: str, n: int = 10000) -> list[float] | None:
     A, B = per_utt_matrix(budget, o, key), per_utt_matrix(budget, best, key)
     if A is None or B is None:
         return None
