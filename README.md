@@ -1,6 +1,6 @@
 # Does the optimizer matter when fine-tuning a speech synthesiser?
 
-An optimizer study with audio you can listen to. A pretrained Tacotron 2 (trained on LJSpeech) is fine-tuned to a new reader's voice with five optimizers: SGD with momentum, Adam, AdamW, RMSprop and L-BFGS. Each optimizer is tuned on a validation set, run with 5 seeds under equal step and time budgets, and scored once on held-out test sentences.
+An optimizer study with audio you can listen to. A pretrained Tacotron 2 (trained on LJSpeech) is fine-tuned to a new reader's voice with five optimizers: SGD with momentum, Adam, AdamW, RMSprop, and L-BFGS. Each optimizer is tuned on a validation set, run with 5 seeds under equal step and time budgets, and scored once on held-out test sentences.
 
 This is v2 of a Math 132A course project. The original version, with a note on its limitations, is in [`v1-course-project/`](v1-course-project/).
 
@@ -8,7 +8,7 @@ Every number below is in [`results/results.json`](results/results.json), produce
 
 ## Findings
 
-**a. The four first-order optimizers can't be told apart.** On the primary metric (teacher-forced mel loss on the test set, 400-step budget), SGD with momentum, Adam, AdamW and RMSprop land within 0.013 of each other, and every difference is inside the seed spread under the rules fixed before the runs. AdamW has the lowest mean (0.362), but that is not a win:
+**a. The four first-order optimizers can't be told apart.** On the primary metric (teacher-forced mel loss on the test set, 400-step budget), SGD with momentum, Adam, AdamW, and RMSprop land within 0.013 of each other, and every difference is inside the seed spread under the rules fixed before the runs. AdamW has the lowest mean (0.362), but that is not a win:
 - At learning rate 1e-4, AdamW's weight decay of 0.01 shrinks the weights by a factor of at least 0.9996 over 400 steps, so it is practically the same optimizer as Adam.
 - With identical data order and dropout masks, Adam and AdamW still differ by more than the gap between the four means: seed 0 gives 0.383 against 0.349.
 - That gap is what this setup's noise looks like.
@@ -16,7 +16,7 @@ Every number below is in [`results/results.json`](results/results.json), produce
 **b. L-BFGS is clearly worse.** It ends at 0.625 mel loss against 0.36–0.38 for the others (95% CI of the difference to AdamW: +0.24 to +0.29), and its MCD is 1.7 dB higher. It is also twice as slow per step. The caveat: **it never line-searched.** Every one of its 2,000 steps across the five final runs used exactly two loss evaluations, meaning the strong-Wolfe line search accepted the first trial step every time. So this tests L-BFGS as a fixed step of 0.3 along curvature estimated from noisy 16-clip batches, not L-BFGS at its best.
 
 **c. The main finding: the agreed metrics missed the model's worst failure.** Fine-tuned models often fail to stop. The stop token never fires, and the model keeps generating until the 1,000-frame (11.6 s) limit.
-- **How often:** about 6 of the 50 test sentences on average for SGD and RMSprop, 11 for AdamW and 12 for Adam. The pretrained model never failed to stop.
+- **How often:** about 6 of the 50 test sentences on average for SGD and RMSprop, 11 for AdamW, and 12 for Adam. The pretrained model never failed to stop.
 - **What it sounds like:** sometimes a quiet tail, sometimes a loud constant tone. On test sentence 2 (*"Stay!--stay!--How strange that it should not have occurred to me before!"*), the AdamW clip speaks the sentence correctly and then holds a tone at about ten times the speech's level (RMS 0.49 against 0.047) for 6.5 seconds.
 - **The recogniser missed it:** Whisper transcribed that clip with **zero word errors out of 13**. Across all 25 runs, the models failed to stop on 187 test sentences, and Whisper scored 83 of them (44%) as error-free. MCD is computed on DTW-aligned frames after trimming silence, so it barely registers a long tail either.
 - **Checkpoint selection can't see it:** the best checkpoint is chosen on teacher-forced mel loss, where the model is fed the real previous frame and never has to stop on its own.
@@ -27,8 +27,8 @@ Every number below is in [`results/results.json`](results/results.json), produce
 |---|---|---|
 | Pretrained model | 9.21 dB | 4.4% |
 | Fine-tuned, first-order optimizers | 6.8–7.0 dB | 6.7–7.7% (SGD 34.5%) |
-| Real recordings, through the vocoder | 4.03 dB | — |
-| Real recordings | — | 3.3% |
+| Real recordings, through the vocoder | 4.03 dB | n/a |
+| Real recordings | n/a | 3.3% |
 
 MCD is the distance to the real recording. The first-order models cover roughly half the distance between the pretrained model and the vocoder's ceiling. Every fine-tuned model is less intelligible than the pretrained one.
 
@@ -45,9 +45,9 @@ Test set (50 sentences), mean ± sd over 5 seeds. Per-seed values are in `result
 | AdamW | 1e-4 | 0.362 ± 0.012 | 6.77 ± 0.13 | 7.7 ± 1.3 | 11.0 ± 4.6 |
 | RMSprop | 3e-5 | 0.375 ± 0.010 | 6.96 ± 0.21 | 6.7 ± 1.1 | 6.4 ± 1.5 |
 | L-BFGS | 0.3 | 0.625 ± 0.116 | 8.46 ± 0.41 | 16.5 ± 11.3 | 2.0 ± 1.9 |
-| *Pretrained model* | — | 1.106 | 9.21 | 4.4 | 0 |
-| *Real recording through the vocoder* | — | — | 4.03 | 3.5 | — |
-| *Real recording* | — | — | — | 3.3 | — |
+| *Pretrained model* | n/a | 1.106 | 9.21 | 4.4 | 0 |
+| *Real recording through the vocoder* | n/a | n/a | 4.03 | 3.5 | n/a |
+| *Real recording* | n/a | n/a | n/a | 3.3 | n/a |
 
 **Time budget (828 s of training)**
 
@@ -88,7 +88,7 @@ Also in `results/figures/`: [`learning-curves-time.svg`](results/figures/learnin
 
   So failures appear early. Whether they keep growing would need checkpoints saved during training.
 
-## Method
+## How it works
 
 - **Model.** SpeechBrain's pretrained [Tacotron 2](https://huggingface.co/speechbrain/tts-tacotron2-ljspeech) (28.2M parameters), fully fine-tuned. Its vocoder, [HiFi-GAN](https://huggingface.co/speechbrain/tts-hifigan-ljspeech) (13.9M), stays frozen. The loss is the recipe's own final-phase loss: mel MSE before and after the post-net plus stop-token BCE. Guided attention is off, matching the end of the original training.
 - **Data.** One reader from LibriTTS-R train-clean-100, chosen by a fixed rule: the female reader with the most audio. That is speaker 40, with 34.9 minutes. Clips of 1–10 s are kept, which drops 92 long clips. The split is fixed by seed:
@@ -130,7 +130,7 @@ Also in `results/figures/`: [`learning-curves-time.svg`](results/figures/learnin
 
 To hear the failure, compare sentence 2 from Adam ([`s2-adam.mp3`](results/audio/s2-adam.mp3), stops cleanly) with AdamW ([`s2-adamw.mp3`](results/audio/s2-adamw.mp3), failed to stop). Whisper scored both clips as perfect.
 
-## Reproduce
+## Run it
 
 ```bash
 uv sync
@@ -145,9 +145,9 @@ uv run python scripts/export_results.py <commit>
 uv run pytest tests
 ```
 
-`scripts/overnight.sh` keeps the Mac awake, logs to `runs/study.log` and can be re-run after a stop or crash; finished runs are skipped. The runs in `results/` were made from commit `af156b3`.
+`scripts/overnight.sh` keeps the Mac awake, logs to `runs/study.log`, and can be re-run after a stop or crash; finished runs are skipped. The runs in `results/` were made from commit `af156b3`.
 
-## Data, models and credits
+## Data, models, and credits
 
 - **Speech data:** LibriTTS-R (Koizumi et al., 2023), [openslr.org/141](https://www.openslr.org/141/), licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). It derives from LibriTTS and LibriVox public-domain audiobook recordings. The reader is identified here only by the corpus speaker ID, 40. The real recordings in `results/audio/` are resampled to 22.05 kHz and MP3-encoded. The synthetic clips are model outputs imitating that reader's voice and are labelled as such.
 - **Models:** SpeechBrain Tacotron 2 and HiFi-GAN (LJSpeech), Apache-2.0. Whisper small.en, Apache-2.0. All are downloaded at run time and not included here.
