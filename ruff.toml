@@ -28,6 +28,8 @@ ignore = ["ANN401", "TRY003", "E501"]
 [lint.per-file-ignores]
 "tests/**" = ["PLR2004", "ANN", "ARG"]
 "test_*.py" = ["PLR2004", "ANN", "ARG"]
+# The scripts are command-line reports; stdout is their output channel.
+"scripts/**" = ["T20"]
 
 [lint.pylint]
 max-args = 4

@@ -101,7 +101,7 @@ for o in OPTS:
     }
     systems.append((o, sorted(mse, key=mse.get)[2], mse))
 
-for system, seed, mse in systems:
+for system, seed, _mse in systems:
     if system == "pretrained":
         model.load_state_dict({k: v for k, v in load_tacotron2().state_dict().items()})
         per_utt, step = ref_utt, 0

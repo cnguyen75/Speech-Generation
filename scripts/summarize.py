@@ -177,11 +177,14 @@ for budget in ("steps", "time"):
     )
     for o in ranked + [o for o in OPTS if o not in ranked]:
         t = table[o]
-        f = lambda k, m=1: (
-            f"{t[k]['mean'] * m:.3f}±{(t[k]['sd'] or 0) * m:.3f}"
-            if t[k]["mean"] is not None
-            else "n/a"
-        )
+
+        def f(k: str, m: float = 1) -> str:
+            return (
+                f"{t[k]['mean'] * m:.3f}±{(t[k]['sd'] or 0) * m:.3f}"
+                if t[k]["mean"] is not None
+                else "n/a"
+            )
+
         vb = t.get("vs_best", {}).get("mel_mse")
         vs = (
             "best"

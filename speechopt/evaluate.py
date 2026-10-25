@@ -60,7 +60,7 @@ class ASR:
 
 def word_errors(asr: ASR, refs: list[str], hyps: list[str]) -> list[tuple[int, int]]:
     rows = []
-    for r, h in zip(refs, hyps):
+    for r, h in zip(refs, hyps, strict=False):
         rn, hn = asr.norm(r), asr.norm(h)
         o = jiwer.process_words(rn if rn.strip() else "<empty>", hn if hn.strip() else "")
         rows.append(
@@ -143,7 +143,7 @@ def evaluate_checkpoint(
     agg["mel_mse_pooled"] = tf_total
     if showcase_dir is not None:
         showcase_dir.mkdir(parents=True, exist_ok=True)
-        for u, w in zip(clips.items, wavs):
+        for u, w in zip(clips.items, wavs, strict=False):
             if u["id"] in showcase:
                 sf.write(str(showcase_dir / f"{u['id']}.wav"), w, SR, subtype="PCM_16")
     return agg, per_utt
@@ -165,7 +165,7 @@ def evaluate_references(
     if showcase_dir is not None:
         for name, ws in (("ground_truth", real), ("copy_synthesis", copy)):
             (showcase_dir / name).mkdir(parents=True, exist_ok=True)
-            for u, w in zip(clips.items, ws):
+            for u, w in zip(clips.items, ws, strict=False):
                 if u["id"] in showcase:
                     sf.write(str(showcase_dir / name / f"{u['id']}.wav"), w, SR, subtype="PCM_16")
     return {"ground_truth": (gt_agg, gt_utt), "copy_synthesis": (cs_agg, cs_utt)}

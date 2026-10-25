@@ -173,10 +173,16 @@ def learning_curves(
     )
     header(svg, title, sub)
     ylo, yhi = 0.3, 1.1
-    sx = lambda v: left + (right - left) * v / xmax
+
+    def sx(v: float) -> float:
+        return left + (right - left) * v / xmax
+
     for k, o in enumerate(OPTS):
         y0 = top + k * (ph + gap)
-        sy = lambda v: y0 + ph * (yhi - v) / (yhi - ylo)
+
+        def sy(v: float) -> float:
+            return y0 + ph * (yhi - v) / (yhi - ylo)
+
         svg.text(24, y0 + 18, NAMES[o], size=15, weight=700)
         svg.text(24, y0 + 38, f"learning rate {LR[o]:g}", size=13, fill=INK3)
         best = [r["best"][mark_budget]["val_mse"] for r in runs[o]]
@@ -311,7 +317,10 @@ for idx, (key, label, lo, hi, ticks, mult, fmt) in enumerate(METRICS):
     col, row = idx % 2, idx // 2
     x0, y0 = 24 + col * 452, 110 + row * 225
     left, right = x0 + 118, x0 + 380
-    sx = lambda v: left + (right - left) * (v - lo) / (hi - lo)
+
+    def sx(v: float) -> float:
+        return left + (right - left) * (v - lo) / (hi - lo)
+
     svg.text(x0, y0, label, size=15, weight=700)
     rows_y = [y0 + 30 + 28 * i for i in range(len(OPTS))]
     for t in ticks:
@@ -386,8 +395,13 @@ top, ph, left0, pw, gap = 140, 150, 70, 138, 32
 for k, o in enumerate(OPTS):
     left = left0 + k * (pw + gap)
     right = left + pw
-    sx = lambda v: left + pw * v / 400
-    sy = lambda v: top + ph * (1 - v / 20)
+
+    def sx(v: float) -> float:
+        return left + pw * v / 400
+
+    def sy(v: float) -> float:
+        return top + ph * (1 - v / 20)
+
     svg.text(left, top - 14, NAMES[o], size=14, weight=700)
     for v in (0, 5, 10, 15, 20):
         svg.line(left, sy(v), right, sy(v), dash="3 3" if v else None)

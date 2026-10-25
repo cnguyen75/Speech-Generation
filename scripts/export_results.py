@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import statistics as st
 import sys
+from typing import Any
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -19,7 +20,10 @@ plan = json.loads((RUNS / "plan.json").read_text())
 summary = json.loads((RUNS / "results.json").read_text())
 ref = json.loads((RUNS / "ref" / "eval.json").read_text())
 man = load_manifest()
-load = lambda p: json.loads(Path(p).read_text())
+
+
+def load(p: str | Path) -> Any:
+    return json.loads(Path(p).read_text())
 
 
 def agg(vals: list[float]) -> dict[str, float]:
