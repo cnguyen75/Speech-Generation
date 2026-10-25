@@ -4,7 +4,8 @@ Phases (all decisions use validation data only; the test split is scored but nev
   0. references on the test split: pretrained model, real recordings, copy-synthesis
   1. tuning: 3 half-decade learning rates per optimizer, 150 steps, seed 100; the grid is extended
      (at most twice) when the best rate is at an edge; selection by best validation mel MSE
-  2. final: seeds 0-4, cut to 4 or at least 3 if the projected job exceeds 10 h; optimizers interleaved by seed
+  2. final: seeds 0-4, cut to 4 or at least 3 if the projected job exceeds 10 h; optimizers
+     interleaved by seed
      with the order rotated each seed; each run trains until it has done 400 steps AND used the
      time budget T (= 400 x Adam's median tuned step time); the best-validation checkpoint inside
      each budget is scored on the test split
@@ -26,7 +27,14 @@ import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from speechopt import train as T  # noqa: E402
-from speechopt.common import RUNS, device, load_manifest, load_tacotron2, load_vocoder, write_json  # noqa: E402
+from speechopt.common import (  # noqa: E402
+    RUNS,
+    device,
+    load_manifest,
+    load_tacotron2,
+    load_vocoder,
+    write_json,
+)
 from speechopt.evaluate import ASR, evaluate_checkpoint, evaluate_references  # noqa: E402
 from speechopt.runtime import ActiveClock, lr_id  # noqa: E402
 
@@ -103,7 +111,6 @@ plan = (
 write_json(plan_path, plan)
 consecutive_failures = 0
 
-# ---------- phase 0: references ----------
 ref_path = OUT / "ref" / "eval.json"
 if not ref_path.exists():
     t0 = time.time()
@@ -129,7 +136,8 @@ if not ref_path.exists():
         },
     )
     log(
-        f"references: pretrained {agg} | real {refs['ground_truth'][0]} | copy-synth {refs['copy_synthesis'][0]} "
+        f"references: pretrained {agg} | real {refs['ground_truth'][0]} | "
+        f"copy-synth {refs['copy_synthesis'][0]} "
         f"| eval took {t_eval:.0f}s"
     )
 eval_seconds = json.loads(ref_path.read_text())["eval_seconds_per_checkpoint"]
@@ -144,7 +152,8 @@ def do_run(
     if (d / "result.json").exists():
         return json.loads((d / "result.json").read_text())
     log(
-        f"run {run_id}: {opt} lr {lr:g} seed {seed} steps {steps} time budget {budget} load {os.getloadavg()[0]:.1f}"
+        f"run {run_id}: {opt} lr {lr:g} seed {seed} steps {steps} time budget {budget} "
+        f"load {os.getloadavg()[0]:.1f}"
     )
     wall0 = time.time()
     try:
@@ -161,7 +170,8 @@ def do_run(
     res["wall_seconds"] = time.time() - wall0
     write_json(d / "result.json", res)
     log(
-        f"run {run_id} done: status {res['status']}, {res.get('steps')} steps, train {res.get('train_time', 0):.0f}s, "
+        f"run {run_id} done: status {res['status']}, {res.get('steps')} steps, "
+        f"train {res.get('train_time', 0):.0f}s, "
         f"wall {res['wall_seconds']:.0f}s, best {res.get('best')}"
     )
     if consecutive_failures >= 3:
@@ -170,7 +180,6 @@ def do_run(
     return res
 
 
-# ---------- phase 1: tuning ----------
 chosen = plan.get("chosen_lr", {})
 for opt in OPTS:
     if opt in chosen:
@@ -202,10 +211,10 @@ for opt in OPTS:
     plan["chosen_lr"] = chosen
     write_json(plan_path, plan)
     log(
-        f"tuning {opt}: val {plan['tuning'][opt]} -> lr {best_lr:g}{' (at grid edge after max extensions)' if best_lr in (grid[0], grid[-1]) else ''}"
+        f"tuning {opt}: val {plan['tuning'][opt]} -> lr {best_lr:g}"
+        + (" (at grid edge after max extensions)" if best_lr in (grid[0], grid[-1]) else "")
     )
 
-# ---------- budgets and seed count ----------
 if "time_budget" not in plan:
     tune = {
         opt: json.loads((OUT / f"tune_{opt}_lr{lr_id(chosen[opt])}" / "result.json").read_text())
@@ -237,10 +246,10 @@ if "time_budget" not in plan:
     }
     write_json(plan_path, plan)
     log(
-        f"time budget T = {plan['time_budget']:.0f}s; seeds {plan['seeds']}; projection {plan['projection']}"
+        f"time budget T = {plan['time_budget']:.0f}s; seeds {plan['seeds']}; "
+        f"projection {plan['projection']}"
     )
 
-# ---------- phase 2: final runs ----------
 for si, seed in enumerate(plan["seeds"]):
     for opt in OPTS[si % len(OPTS) :] + OPTS[: si % len(OPTS)]:
         run_id = f"final_{opt}_s{seed}"

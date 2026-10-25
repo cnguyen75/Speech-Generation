@@ -162,7 +162,8 @@ for system, seed, mse in systems:
 write_json(
     OUT / "manifest.json",
     {
-        "note": "Synthetic speech in the voice of LibriTTS-R reader 40 (CC BY 4.0), test-set sentences only, each paired "
+        "note": "Synthetic speech in the voice of LibriTTS-R reader 40 (CC BY 4.0), "
+        "test-set sentences only, each paired "
         "with the real recording. Published as generated except where noted in `tail`.",
         "tail_rule": {
             "margin_frames": MARGIN_FRAMES,

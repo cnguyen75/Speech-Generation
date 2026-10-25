@@ -55,7 +55,6 @@ evals = {
     for b in ("steps", "time")
 }
 
-# load flags
 base = 6.0
 med_step = {
     o: st.median(
@@ -173,7 +172,8 @@ for budget in ("steps", "time"):
     )
     lines.append(f"\n{hdr} -- mean ± sd over seeds (test split)")
     lines.append(
-        f"  {'optimizer':<13}{'lr':>8}  {'mel MSE':>16}  {'MCD dB':>13}  {'WER %':>13}  stop-fail  ok/div/fail  vs best (mel MSE)"
+        f"  {'optimizer':<13}{'lr':>8}  {'mel MSE':>16}  {'MCD dB':>13}  {'WER %':>13}  "
+        "stop-fail  ok/div/fail  vs best (mel MSE)"
     )
     for o in ranked + [o for o in OPTS if o not in ranked]:
         t = table[o]
@@ -193,8 +193,10 @@ for budget in ("steps", "time"):
             )
         )
         lines.append(
-            f"  {NAMES[o]:<13}{t['lr']:>8.0e}  {f('mel_mse'):>16}  {f('mcd'):>13}  {f('wer', 100):>13}  "
-            f"{t['stop_failures']['mean'] if t['stop_failures']['mean'] is not None else 'n/a':>9}  "
+            f"  {NAMES[o]:<13}{t['lr']:>8.0e}  {f('mel_mse'):>16}  {f('mcd'):>13}  "
+            f"{f('wer', 100):>13}  "
+            f"{t['stop_failures']['mean'] if t['stop_failures']['mean'] is not None else 'n/a':>9}"
+            "  "
             f"{t['n_ok']}/{t['n_diverged']}/{t['n_failed']:<9}  {vs}"
         )
 
@@ -208,7 +210,8 @@ head = [
         f"{manifest['splits'][k]['clips']} ({manifest['splits'][k]['minutes']} min)"
         for k in ("train", "val", "test")
     ),
-    f"Seeds: {seeds}; chosen learning rates: {plan['chosen_lr']}; time budget {plan['time_budget']:.0f}s",
+    f"Seeds: {seeds}; chosen learning rates: {plan['chosen_lr']}; "
+    f"time budget {plan['time_budget']:.0f}s",
     "References on the test split:",
 ]
 for k, name in (
@@ -232,7 +235,8 @@ for budget in ("steps", "time"):
         ]
         noise = [o for o in r["ranking_by_mel_mse"][1:] if o not in clear]
         head.append(
-            f"[{budget} budget] lowest mean test mel MSE: {NAMES[b]}. Clearly worse: {', '.join(NAMES[o] for o in clear) or 'none'}. "
+            f"[{budget} budget] lowest mean test mel MSE: {NAMES[b]}. "
+            f"Clearly worse: {', '.join(NAMES[o] for o in clear) or 'none'}. "
             f"Within noise of the best: {', '.join(NAMES[o] for o in noise) or 'none'}."
         )
 head.append(

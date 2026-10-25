@@ -19,7 +19,14 @@ import torchaudio.functional as AF
 
 
 sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parents[1]))
-from speechopt.common import DATA, SPEAKER_DIR, SR, text_to_ids, wav_to_mel, write_json  # noqa: E402
+from speechopt.common import (  # noqa: E402
+    DATA,
+    SPEAKER_DIR,
+    SR,
+    text_to_ids,
+    wav_to_mel,
+    write_json,
+)
 
 
 RAW = DATA / "raw"

@@ -1,5 +1,7 @@
 """Score a Tacotron 2 checkpoint on a split: teacher-forced mel MSE, then free-running synthesis
-through the frozen HiFi-GAN, scored by Whisper word error rate and MCD against the real recording."""
+through the frozen HiFi-GAN, scored by Whisper word error rate and MCD against the real
+recording.
+"""
 
 from collections.abc import Collection
 from pathlib import Path

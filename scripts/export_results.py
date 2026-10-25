@@ -66,7 +66,8 @@ verdicts = {
     for b in ("steps", "time")
 }
 
-# post-hoc: stop failures at every evaluated checkpoint, and failed sentences the recogniser scored as error-free
+# post-hoc: stop failures at every evaluated checkpoint, and failed sentences the recogniser
+# scored as error-free
 by_ckpt, failed_total, failed_perfect, example = [], 0, 0, None
 for o in OPTS:
     for s in range(5):
@@ -104,13 +105,16 @@ step_spread = {
 write_json(
     ROOT / "results" / "results.json",
     {
-        "about": "Optimizer study: fine-tuning a pretrained Tacotron 2 (LJSpeech) to a new LibriTTS-R reader. "
+        "about": "Optimizer study: fine-tuning a pretrained Tacotron 2 (LJSpeech) to a new "
+        "LibriTTS-R reader. "
         "All numbers are read from runs/ by scripts/export_results.py.",
         "runs_commit": COMMIT,
         "models": {
             "tts": "speechbrain/tts-tacotron2-ljspeech (Apache-2.0)",
             "vocoder": "speechbrain/tts-hifigan-ljspeech (Apache-2.0), frozen",
-            "asr": "openai/whisper-small.en (Apache-2.0), greedy decoding, Whisper English normaliser",
+            "asr": (
+                "openai/whisper-small.en (Apache-2.0), greedy decoding, Whisper English normaliser"
+            ),
         },
         "data": {
             "source": man["source"],
@@ -131,7 +135,10 @@ write_json(
             "seeds": plan["seeds"],
             "selection": "best validation teacher-forced mel MSE within each budget",
             "primary_metric": "test teacher-forced post-net log-mel MSE at the step budget",
-            "clear_rule": "95% paired bootstrap CI excludes 0 AND per-seed ranges do not overlap AND |mean diff| >= 1% of best (1 point for WER)",
+            "clear_rule": (
+                "95% paired bootstrap CI excludes 0 AND per-seed ranges do not overlap "
+                "AND |mean diff| >= 1% of best (1 point for WER)"
+            ),
             "device": plan["device"],
             "torch": plan["torch"],
         },
@@ -154,7 +161,9 @@ write_json(
             "median_step_seconds_spread": step_spread,
         },
         "post_hoc": {
-            "note": "Outside the pre-set rules; existing checkpoints only; no retraining or retuning.",
+            "note": (
+                "Outside the pre-set rules; existing checkpoints only; no retraining or retuning."
+            ),
             "stop_failures_by_checkpoint": by_ckpt,
             "failed_to_stop_scored_error_free_by_asr": {
                 "failed_sentences": failed_total,
@@ -162,7 +171,10 @@ write_json(
                 "scope": "all 25 runs, step-budget checkpoints, 50 test sentences each",
                 "example": example,
             },
-            "wer_capped": "per-sentence word errors capped at the sentence's word count; see final.*.wer_capped_posthoc",
+            "wer_capped": (
+                "per-sentence word errors capped at the sentence's word count; "
+                "see final.*.wer_capped_posthoc"
+            ),
         },
         "audio": {
             "manifest": "audio/manifest.json",

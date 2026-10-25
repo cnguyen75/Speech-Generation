@@ -1,4 +1,5 @@
-"""Build the study's SVG figures in the site style (paper card, Archivo, blue data, grey references).
+"""Build the study's SVG figures in the site style (paper card, Archivo, blue data, grey
+references).
 
 Every value is read from runs/ (result.json, eval_*.json, ref/eval.json); nothing is typed in.
 Usage: python scripts/make_figures.py <commit>
@@ -78,7 +79,8 @@ class Svg:
         anchor: str = "start",
     ) -> None:
         self.add(
-            f'<text x="{x:.1f}" y="{y:.1f}" font-size="{size}" font-weight="{weight}" fill="{fill}" text-anchor="{anchor}">{escape(s)}</text>'
+            f'<text x="{x:.1f}" y="{y:.1f}" font-size="{size}" font-weight="{weight}" '
+            f'fill="{fill}" text-anchor="{anchor}">{escape(s)}</text>'
         )
 
     def line(
@@ -94,7 +96,10 @@ class Svg:
         tip: str | None = None,
     ) -> None:
         d = f' stroke-dasharray="{dash}"' if dash else ""
-        body = f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" stroke="{stroke}" stroke-width="{width}"{d} stroke-opacity="{opacity}" stroke-linecap="round"'
+        body = (
+            f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" stroke="{stroke}" '
+            f'stroke-width="{width}"{d} stroke-opacity="{opacity}" stroke-linecap="round"'
+        )
         self.add(body + (f"><title>{escape(tip)}</title></line>" if tip else "/>"))
 
     def poly(
@@ -106,7 +111,10 @@ class Svg:
         tip: str | None = None,
     ) -> None:
         p = " ".join(f"{x:.1f},{y:.1f}" for x, y in pts)
-        body = f'<polyline points="{p}" fill="none" stroke="{stroke}" stroke-width="{width}" stroke-opacity="{opacity}" stroke-linejoin="round" stroke-linecap="round"'
+        body = (
+            f'<polyline points="{p}" fill="none" stroke="{stroke}" stroke-width="{width}" '
+            f'stroke-opacity="{opacity}" stroke-linejoin="round" stroke-linecap="round"'
+        )
         self.add(body + (f"><title>{escape(tip)}</title></polyline>" if tip else "/>"))
 
     def dot(
@@ -159,7 +167,8 @@ def learning_curves(
         W,
         H,
         title,
-        f"Validation post-net log-mel MSE for each of 5 seeds. Dots: checkpoint kept for the {mark_budget} budget. "
+        f"Validation post-net log-mel MSE for each of 5 seeds. "
+        f"Dots: checkpoint kept for the {mark_budget} budget. "
         f"Source: runs/final_*/result.json, commit {COMMIT}.",
     )
     header(svg, title, sub)
@@ -215,7 +224,10 @@ def learning_curves(
                 sx(p[xkey]),
                 sy(p["val_mse"]),
                 r=5,
-                tip=f"{NAMES[o]}, seed {s}: kept checkpoint at step {step}, validation {p['val_mse']:.3f}",
+                tip=(
+                    f"{NAMES[o]}, seed {s}: kept checkpoint at step {step}, "
+                    f"validation {p['val_mse']:.3f}"
+                ),
             )
     svg.text((left + right) / 2, H - 8, xlabel, size=13, fill=INK3, anchor="middle")
     svg.save(fname)
@@ -229,8 +241,10 @@ learning_curves(
     "learning-curves-steps.svg",
     "Validation loss by training step",
     [
-        "Validation mel loss (lower is better), one line per seed, 5 seeds per optimizer. Dots mark the",
-        "checkpoint kept within the 400-step budget. All five optimizers start from the same pretrained model.",
+        "Validation mel loss (lower is better), one line per seed, 5 seeds per optimizer. "
+        "Dots mark the",
+        "checkpoint kept within the 400-step budget. "
+        "All five optimizers start from the same pretrained model.",
     ],
 )
 learning_curves(
@@ -241,14 +255,14 @@ learning_curves(
     "learning-curves-time.svg",
     "Validation loss by training time",
     [
-        "Same runs against training time. Dots mark the checkpoint kept within the 828 s time budget.",
+        "Same runs against training time. "
+        "Dots mark the checkpoint kept within the 828 s time budget.",
         "L-BFGS takes about twice as long per step, so it gets about 200 steps inside the budget.",
     ],
     budget_line=T_BUDGET,
     mark_budget="time",
 )
 
-# ---------- test results: per-seed dots, 2 x 2 panels ----------
 METRICS = [
     ("mel_mse", "Mel loss (teacher-forced)", 0.0, 1.2, [0, 0.4, 0.8, 1.2], 1, "{:.3f}"),
     ("mcd", "MCD, dB (numpy method)", 3.0, 10.0, [4, 6, 8, 10], 1, "{:.2f}"),
@@ -280,14 +294,17 @@ svg = Svg(
     W,
     H,
     "Test-set results by optimizer, 400-step budget",
-    f"Each dot is one seed; the black tick is the mean over 5 seeds. Grey lines are reference systems. Source: runs/final_*/eval_steps.json and runs/ref/eval.json, commit {COMMIT}.",
+    "Each dot is one seed; the black tick is the mean over 5 seeds. Grey lines are reference "
+    f"systems. Source: runs/final_*/eval_steps.json and runs/ref/eval.json, commit {COMMIT}.",
 )
 header(
     svg,
     "Test-set results at the 400-step budget",
     [
-        "50 held-out sentences. Each dot is one seed, the black tick is the mean. Lower is better everywhere.",
-        "Grey lines: the pretrained model, the real recordings and the vocoder ceiling (real mels through HiFi-GAN).",
+        "50 held-out sentences. Each dot is one seed, the black tick is the mean. "
+        "Lower is better everywhere.",
+        "Grey lines: the pretrained model, the real recordings and the vocoder ceiling "
+        "(real mels through HiFi-GAN).",
     ],
 )
 for idx, (key, label, lo, hi, ticks, mult, fmt) in enumerate(METRICS):
@@ -346,21 +363,23 @@ for idx, (key, label, lo, hi, ticks, mult, fmt) in enumerate(METRICS):
         svg.text(right + 10, y + 5, fmt.format(m), size=13, weight=700)
 svg.save("test-results.svg")
 
-# ---------- post-hoc: stop failures at every evaluated checkpoint ----------
 W, H = 920, 350
 svg = Svg(
     W,
     H,
     "Post-hoc: failed-to-stop count at each saved checkpoint",
-    f"Post-hoc analysis outside the pre-set rules, using existing checkpoints only. Each dot is one evaluated checkpoint "
-    f"(50 test sentences); lines join two checkpoints from the same run. Source: runs/final_*/eval_*.json, commit {COMMIT}.",
+    "Post-hoc analysis outside the pre-set rules, using existing checkpoints only. "
+    "Each dot is one evaluated checkpoint (50 test sentences); lines join two checkpoints "
+    f"from the same run. Source: runs/final_*/eval_*.json, commit {COMMIT}.",
 )
 header(
     svg,
     "Post-hoc: when do stop failures appear?",
     [
-        "Outside the pre-set rules; existing checkpoints only (two at most per run, so no full trajectories).",
-        "Each dot is a saved checkpoint scored on the 50 test sentences; lines join two checkpoints of one run.",
+        "Outside the pre-set rules; existing checkpoints only "
+        "(two at most per run, so no full trajectories).",
+        "Each dot is a saved checkpoint scored on the 50 test sentences; "
+        "lines join two checkpoints of one run.",
     ],
 )
 top, ph, left0, pw, gap = 140, 150, 70, 138, 32
