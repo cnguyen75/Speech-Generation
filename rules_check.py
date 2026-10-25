@@ -22,6 +22,8 @@ MIN_README_LINES = 3
 BLANK_RUN_LIMIT = 2
 SKIP_DIRS = {
     ".git",
+    ".pytest_cache",
+    ".ruff_cache",
     "node_modules",
     "_site",
     "_site-drafts",

@@ -1,7 +1,8 @@
 """Bookkeeping for the resumable study that must not depend on models or data."""
+
 import json
-import time
 from pathlib import Path
+import time
 
 from .common import write_json
 

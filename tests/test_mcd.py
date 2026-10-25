@@ -3,6 +3,7 @@ import pytest
 
 from speechopt.mcd import K, freqt, mcd, mcd_aligned, mel_cepstrum
 
+
 SR = 22050
 
 
@@ -13,6 +14,7 @@ def _voice(f0=180.0, dur=1.5, formants=(700, 1200, 2600), seed=0):
     x = np.zeros(n)
     x[:: int(SR / f0)] = 1.0
     from scipy.signal import lfilter
+
     for f in formants:
         r = np.exp(-np.pi * 120 / SR)
         x = lfilter([1.0], [1.0, -2 * r * np.cos(2 * np.pi * f / SR), r * r], x)
@@ -70,8 +72,12 @@ def test_cepstrum_is_insensitive_to_pitch_but_sensitive_to_formants():
 
 def test_dtw_handles_time_stretch():
     x = _voice(dur=1.0)
-    y = np.concatenate([_voice(formants=(700, 1200, 2600), dur=0.5), _voice(formants=(300, 2300, 3000), dur=0.5)])
-    y_slow = np.concatenate([_voice(formants=(700, 1200, 2600), dur=0.8), _voice(formants=(300, 2300, 3000), dur=0.8)])
+    y = np.concatenate(
+        [_voice(formants=(700, 1200, 2600), dur=0.5), _voice(formants=(300, 2300, 3000), dur=0.5)]
+    )
+    y_slow = np.concatenate(
+        [_voice(formants=(700, 1200, 2600), dur=0.8), _voice(formants=(300, 2300, 3000), dur=0.8)]
+    )
     assert mcd(y, y_slow) < mcd(y, x)
 
 

@@ -13,8 +13,10 @@ study but NOT with published SPTK-based MCD values.
 5. c0 (energy) is excluded; frames are aligned with DTW (Euclidean on c1..c24), and
    MCD = (10 / ln 10) * sqrt(2 * sum_d (c_d - c'_d)^2) is averaged over the aligned path.
 """
+
 import librosa
 import numpy as np
+
 
 ALPHA_22K = 0.455
 ORDER = 24
@@ -41,7 +43,11 @@ def freqt(c, order, alpha):
 
 def mel_cepstrum(y, order=ORDER, alpha=ALPHA_22K, lifter=LIFTER):
     """Frames x (order+1) mel-cepstra of a mono float waveform."""
-    spec = np.abs(librosa.stft(np.asarray(y, dtype=np.float64), n_fft=N_FFT, hop_length=HOP, window="hann", center=True))
+    spec = np.abs(
+        librosa.stft(
+            np.asarray(y, dtype=np.float64), n_fft=N_FFT, hop_length=HOP, window="hann", center=True
+        )
+    )
     log_amp = np.log(np.maximum(spec, 1e-8)).T  # frames x (N_FFT/2+1)
     real_cep = np.fft.irfft(log_amp, n=N_FFT, axis=1)[:, :lifter]
     c = real_cep.copy()

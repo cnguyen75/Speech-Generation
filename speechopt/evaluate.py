@@ -1,5 +1,6 @@
 """Score a Tacotron 2 checkpoint on a split: teacher-forced mel MSE, then free-running synthesis
 through the frozen HiFi-GAN, scored by Whisper word error rate and MCD against the real recording."""
+
 import jiwer
 import numpy as np
 import soundfile as sf
@@ -10,6 +11,7 @@ from .common import SPEAKER_DIR, SR, text_to_ids
 from .mcd import mcd
 from .train import teacher_forced_mse
 
+
 ASR_MODEL = "openai/whisper-small.en"
 SYNTH_SEED = 777  # per-sentence seed = SYNTH_SEED + index, identical for every checkpoint
 MAX_DECODER_STEPS = 1000
@@ -18,8 +20,13 @@ MAX_DECODER_STEPS = 1000
 class ASR:
     def __init__(self, dev):
         from transformers import WhisperForConditionalGeneration, WhisperProcessor
+
         self.proc = WhisperProcessor.from_pretrained(ASR_MODEL)
-        self.model = WhisperForConditionalGeneration.from_pretrained(ASR_MODEL, use_safetensors=True).to(dev).eval()
+        self.model = (
+            WhisperForConditionalGeneration.from_pretrained(ASR_MODEL, use_safetensors=True)
+            .to(dev)
+            .eval()
+        )
         self.dev = dev
 
     def norm(self, text):
@@ -29,8 +36,13 @@ class ASR:
     def transcribe(self, wavs_22k, batch=8):
         out = []
         for s in range(0, len(wavs_22k), batch):
-            chunk = [AF.resample(torch.as_tensor(w, dtype=torch.float32), SR, 16000).numpy() for w in wavs_22k[s:s + batch]]
-            feats = self.proc(chunk, sampling_rate=16000, return_tensors="pt").input_features.to(self.dev)
+            chunk = [
+                AF.resample(torch.as_tensor(w, dtype=torch.float32), SR, 16000).numpy()
+                for w in wavs_22k[s : s + batch]
+            ]
+            feats = self.proc(chunk, sampling_rate=16000, return_tensors="pt").input_features.to(
+                self.dev
+            )
             ids = self.model.generate(feats, num_beams=1, do_sample=False, max_new_tokens=200)
             out += self.proc.batch_decode(ids, skip_special_tokens=True)
         return out
@@ -41,7 +53,9 @@ def word_errors(asr, refs, hyps):
     for r, h in zip(refs, hyps):
         rn, hn = asr.norm(r), asr.norm(h)
         o = jiwer.process_words(rn if rn.strip() else "<empty>", hn if hn.strip() else "")
-        rows.append((o.substitutions + o.deletions + o.insertions, o.substitutions + o.deletions + o.hits))
+        rows.append(
+            (o.substitutions + o.deletions + o.insertions, o.substitutions + o.deletions + o.hits)
+        )
     return rows
 
 
@@ -68,19 +82,31 @@ def score(utts, wavs, failed, asr, extra=None):
     errs = word_errors(asr, [u["text"] for u in utts], hyps)
     per_utt = []
     for k, u in enumerate(utts):
-        per_utt.append(dict(id=u["id"], hyp=hyps[k], word_errors=errs[k][0], ref_words=errs[k][1],
-                            mcd=mcd(refs_real[k], wavs[k]), stop_failure=bool(failed[k]),
-                            **({} if extra is None else {"mel_mse": extra[u["id"]]})))
-    agg = dict(n=len(utts),
-               wer=sum(r["word_errors"] for r in per_utt) / max(1, sum(r["ref_words"] for r in per_utt)),
-               mcd=float(np.mean([r["mcd"] for r in per_utt])),
-               stop_failures=int(sum(failed)))
+        per_utt.append(
+            dict(
+                id=u["id"],
+                hyp=hyps[k],
+                word_errors=errs[k][0],
+                ref_words=errs[k][1],
+                mcd=mcd(refs_real[k], wavs[k]),
+                stop_failure=bool(failed[k]),
+                **({} if extra is None else {"mel_mse": extra[u["id"]]}),
+            )
+        )
+    agg = dict(
+        n=len(utts),
+        wer=sum(r["word_errors"] for r in per_utt) / max(1, sum(r["ref_words"] for r in per_utt)),
+        mcd=float(np.mean([r["mcd"] for r in per_utt])),
+        stop_failures=int(sum(failed)),
+    )
     if extra is not None:
         agg["mel_mse"] = float(np.mean(list(extra.values())))
     return agg, per_utt
 
 
-def evaluate_checkpoint(state, train_model, cpu_model, vocoder, asr, clips, dev, showcase_dir=None, showcase=()):
+def evaluate_checkpoint(
+    state, train_model, cpu_model, vocoder, asr, clips, dev, showcase_dir=None, showcase=()
+):
     """state: Tacotron 2 state_dict. Returns (aggregate, per-utterance) on `clips`."""
     train_model.load_state_dict(state)
     train_model.to(dev)

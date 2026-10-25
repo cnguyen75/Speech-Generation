@@ -4,8 +4,12 @@ Usage: curl -sL <url> | python -I scripts/stream_extract.py data/SPEAKERS.txt da
 Only .wav and .normalized.txt members whose path matches
 LibriTTS_R/train-clean-100/<speaker>/<chapter>/<file> are written, under out/<speaker>/<file>.
 """
-import re, sys, tarfile
+
 from pathlib import Path
+import re
+import sys
+import tarfile
+
 
 speakers_txt, out = Path(sys.argv[1]), Path(sys.argv[2])
 female = set()

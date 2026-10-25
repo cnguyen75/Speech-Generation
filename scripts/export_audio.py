@@ -10,18 +10,30 @@ Rules (fixed before export, see README):
   and when that tail is louder (RMS) than the speech before it, the tail is reduced by 20 dB
   (one tenth of the amplitude) with a 50 ms fade-in of the reduction. Quiet failures are untouched.
 """
+
 import json
-import sys
 from pathlib import Path
+import sys
 
 import numpy as np
 import soundfile as sf
 import torch
 
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from speechopt.common import RUNS, ROOT, SR, load_manifest, load_tacotron2, load_vocoder, text_to_ids, write_json  # noqa: E402
+from speechopt.common import (
+    ROOT,
+    RUNS,
+    SR,
+    load_manifest,
+    load_tacotron2,
+    load_vocoder,
+    text_to_ids,
+    write_json,
+)  # noqa: E402
 from speechopt.evaluate import SYNTH_SEED, real_wav  # noqa: E402
 from speechopt.train import Clips  # noqa: E402
+
 
 OUT = ROOT / "results" / "audio"
 OPTS = ["sgd", "adam", "adamw", "rmsprop", "lbfgs"]
@@ -36,15 +48,22 @@ OUT.mkdir(parents=True, exist_ok=True)
 
 
 def write_mp3(path, wav):
-    sf.write(str(path), np.clip(wav, -1.0, 1.0), SR, format="MP3", subtype="MPEG_LAYER_III",
-             compression_level=MP3_LEVEL, bitrate_mode="CONSTANT")
+    sf.write(
+        str(path),
+        np.clip(wav, -1.0, 1.0),
+        SR,
+        format="MP3",
+        subtype="MPEG_LAYER_III",
+        compression_level=MP3_LEVEL,
+        bitrate_mode="CONSTANT",
+    )
     size = path.stat().st_size
     assert size < MAX_BYTES, f"{path.name} is {size} bytes"
     return size
 
 
 def rms(x):
-    return float(np.sqrt(np.mean(x ** 2))) if len(x) else 0.0
+    return float(np.sqrt(np.mean(x**2))) if len(x) else 0.0
 
 
 @torch.no_grad()
@@ -60,14 +79,26 @@ clips = []
 for n, uid in enumerate(showcase, 1):
     text = next(c["text"] for c in test.items if c["id"] == uid)
     real = real_wav(uid)
-    clips.append(dict(sentence=n, id=uid, text=text, system="ground_truth", file=f"s{n}-ground-truth.mp3",
-                      seconds=round(len(real) / SR, 2), bytes=write_mp3(OUT / f"s{n}-ground-truth.mp3", real)))
+    clips.append(
+        dict(
+            sentence=n,
+            id=uid,
+            text=text,
+            system="ground_truth",
+            file=f"s{n}-ground-truth.mp3",
+            seconds=round(len(real) / SR, 2),
+            bytes=write_mp3(OUT / f"s{n}-ground-truth.mp3", real),
+        )
+    )
 ref = json.loads((RUNS / "ref" / "eval.json").read_text())
 ref_utt = {u["id"]: u for u in ref["pretrained"]["per_utt"]}
 
 systems = [("pretrained", None, None)]
 for o in OPTS:
-    mse = {s: json.loads((RUNS / f"final_{o}_s{s}" / "eval_steps.json").read_text())["agg"]["mel_mse"] for s in range(5)}
+    mse = {
+        s: json.loads((RUNS / f"final_{o}_s{s}" / "eval_steps.json").read_text())["agg"]["mel_mse"]
+        for s in range(5)
+    }
     systems.append((o, sorted(mse, key=mse.get)[2], mse))
 
 for system, seed, mse in systems:
@@ -83,11 +114,23 @@ for system, seed, mse in systems:
     for n, uid in enumerate(showcase, 1):
         wav, frames, argmax = generate(uid)
         u = per_utt[uid]
-        assert bool(frames >= 1000) == bool(u["stop_failure"]), "regenerated clip disagrees with the evaluation"
-        info = dict(sentence=n, id=uid, system=system, seed=seed, checkpoint_step=step,
-                    stop_failure=bool(u["stop_failure"]), asr_transcript=u["hyp"].strip(),
-                    word_errors=u["word_errors"], ref_words=u["ref_words"], mcd_db=round(u["mcd"], 2),
-                    seconds=round(len(wav) / SR, 2), tail=None)
+        assert bool(frames >= 1000) == bool(u["stop_failure"]), (
+            "regenerated clip disagrees with the evaluation"
+        )
+        info = dict(
+            sentence=n,
+            id=uid,
+            system=system,
+            seed=seed,
+            checkpoint_step=step,
+            stop_failure=bool(u["stop_failure"]),
+            asr_transcript=u["hyp"].strip(),
+            word_errors=u["word_errors"],
+            ref_words=u["ref_words"],
+            mcd_db=round(u["mcd"], 2),
+            seconds=round(len(wav) / SR, 2),
+            tail=None,
+        )
         if u["stop_failure"]:
             start_frame = int(np.argmax(argmax == argmax.max())) + MARGIN_FRAMES
             cut = min(len(wav), start_frame * HOP)
@@ -97,22 +140,42 @@ for system, seed, mse in systems:
                 gain = np.ones_like(wav)
                 fade = int(FADE_S * SR)
                 ramp = np.linspace(1.0, 10 ** (TAIL_DB / 20), fade)
-                gain[cut:cut + fade] = ramp[: len(gain[cut:cut + fade])]
-                gain[cut + fade:] = 10 ** (TAIL_DB / 20)
+                gain[cut : cut + fade] = ramp[: len(gain[cut : cut + fade])]
+                gain[cut + fade :] = 10 ** (TAIL_DB / 20)
                 wav = wav * gain
-            info["tail"] = dict(starts_at_s=round(cut / SR, 2), speech_rms=round(before, 4),
-                                tail_rms_as_generated=round(after, 4), reduced_db=TAIL_DB if reduced else 0.0)
+            info["tail"] = dict(
+                starts_at_s=round(cut / SR, 2),
+                speech_rms=round(before, 4),
+                tail_rms_as_generated=round(after, 4),
+                reduced_db=TAIL_DB if reduced else 0.0,
+            )
         name = f"s{n}-{system}.mp3"
         info.update(file=name, bytes=write_mp3(OUT / name, wav))
         clips.append(info)
-        print(name, "FAILED TO STOP" if info["stop_failure"] else "", info["tail"] or "", f"{info['bytes'] // 1024} KB")
+        print(
+            name,
+            "FAILED TO STOP" if info["stop_failure"] else "",
+            info["tail"] or "",
+            f"{info['bytes'] // 1024} KB",
+        )
 
-write_json(OUT / "manifest.json", {
-    "note": "Synthetic speech in the voice of LibriTTS-R reader 40 (CC BY 4.0), test-set sentences only, each paired "
-            "with the real recording. Published as generated except where noted in `tail`.",
-    "tail_rule": {"margin_frames": MARGIN_FRAMES, "reduction_db": TAIL_DB, "fade_s": FADE_S,
-                  "condition": "clip failed to stop AND tail RMS > speech RMS"},
-    "seed_rule": "median seed by test mel MSE at the 400-step budget",
-    "mp3": {"compression_level": MP3_LEVEL, "sample_rate": SR, "channels": 1},
-    "sentences": [dict(n=n, id=uid, text=next(c["text"] for c in test.items if c["id"] == uid)) for n, uid in enumerate(showcase, 1)],
-    "clips": clips})
+write_json(
+    OUT / "manifest.json",
+    {
+        "note": "Synthetic speech in the voice of LibriTTS-R reader 40 (CC BY 4.0), test-set sentences only, each paired "
+        "with the real recording. Published as generated except where noted in `tail`.",
+        "tail_rule": {
+            "margin_frames": MARGIN_FRAMES,
+            "reduction_db": TAIL_DB,
+            "fade_s": FADE_S,
+            "condition": "clip failed to stop AND tail RMS > speech RMS",
+        },
+        "seed_rule": "median seed by test mel MSE at the 400-step budget",
+        "mp3": {"compression_level": MP3_LEVEL, "sample_rate": SR, "channels": 1},
+        "sentences": [
+            dict(n=n, id=uid, text=next(c["text"] for c in test.items if c["id"] == uid))
+            for n, uid in enumerate(showcase, 1)
+        ],
+        "clips": clips,
+    },
+)
